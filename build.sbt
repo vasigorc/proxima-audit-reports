@@ -47,11 +47,24 @@ lazy val auditReportCli = (project in file("cli"))
     assembly / assemblyJarName := "audit-report-cli.jar",
     assembly / assemblyMergeStrategy := {
       case PathList("META-INF", "services", xs @ _*) => MergeStrategy.concat
-      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-      case _ => MergeStrategy.first
+      case PathList("META-INF", xs @ _*)             => MergeStrategy.discard
+      case _                                         => MergeStrategy.first
     }
   )
   .enablePlugins(AssemblyPlugin)
+
+lazy val auditReportDebian = project
+  .dependsOn(auditReportCli)
+  .enablePlugins(JavaAppPackaging)
+  .settings(
+    name := "audit-report-debian",
+    Debian / packageName := "audit-report-cli",
+    Universal / mappings ++= {
+      val fatJar = (auditReportCli / assembly / assemblyOutputPath).value
+      Seq(fatJar -> "lib/audit-report-cli.jar")
+    },
+    debianControlFile := file("cli/src/debian/DEBIAN/control") // our custom control file
+  )
 
 lazy val root = (project in file("."))
   .aggregate(core, auditReportPlugin, auditReportCli)
