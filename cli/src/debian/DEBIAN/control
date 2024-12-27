@@ -1,0 +1,8 @@
+Package: audit-report-cli
+Version: 0.1.0
+Section: default
+Priority: optional
+Architecture: all
+Depends: default-jre-headless
+Maintainer: Mohsen Zainalpour <mzainalpour@ncl.com>, Vasile Gorcinschi <vgorcinschi@ncl.com>
+Description: Command-line tool for generating audit reports
